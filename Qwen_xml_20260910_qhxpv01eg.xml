@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xhtml="http://www.w3.org/1999/xhtml" width="100%" height="100%" viewBox="0 0 1920 1080">
+  <foreignObject id="fo" width="1920" height="1080" x="0" y="0">
+    <xhtml:html xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;margin:0;padding:0;">
+    <xhtml:head>
+      <xhtml:title>slack</xhtml:title>
+      <xhtml:link href="https://fonts.googleapis.com/css2?family=Fredoka+One&amp;display=swap" rel="stylesheet"/>
+      <xhtml:script src="https://unpkg.com/lucide@latest"></xhtml:script>
+      <xhtml:style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { 
+            width: 100%; height: 100%; overflow: hidden; 
+            background-color: #0a0a0a; color: #e0e0e0; font-family: Arial; 
+            display: flex; justify-content: center; align-items: center;
+        }
+        .bg-stripes {
+            position: fixed; top: -100%; left: -100%; width: 300%; height: 300%;
+            background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.04) 20px, rgba(255,255,255,0.04) 40px);
+            animation: moveStripes 10s linear infinite; z-index: -2; pointer-events: none;
+        }
+        @keyframes moveStripes { 0% { transform: translate(0, 0); } 100% { transform: translate(100px, -100px); } }
+        
+        #snowCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+
+        .container {
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            z-index: 10; padding: 40px; padding-bottom: 100px;
+            background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(10px);
+            border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: calc(100vh - 120px); overflow-y: auto; width: 90%; max-width: 1000px;
+        }
+
+        h1 {
+            font-size: 56px; margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff, #888888);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 3px; font-weight: 400; font-family: 'Fredoka One', cursive;
+        }
+        h3 { font-size: 20px; margin: 20px auto 30px; color: #999; font-weight: 300; }
+
+        .button-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; max-width: 800px; margin: 20px auto; }
+        .regular-button {
+            position: relative; min-width: 180px; padding: 15px 25px;
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a); color: #e0e0e0;
+            border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 8px;
+            font-size: 15px; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); font-weight: 500;
+        }
+        .regular-button:hover { background: linear-gradient(135deg, #3a3a3a, #2a2a2a); transform: translateY(-2px); border-color: rgba(255,255,255,0.2); }
+
+        .tab-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            display: flex; justify-content: center; align-items: center; gap: 40px;
+            padding: 15px 0; z-index: 1000; background: transparent; pointer-events: none;
+        }
+        .tab-item {
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; transition: all 0.3s ease; opacity: 0.5; color: #e0e0e0; pointer-events: auto;
+        }
+        .tab-item:hover { opacity: 0.8; transform: translateY(-3px); }
+        .tab-item.active { opacity: 1; color: #ffffff; }
+        .tab-item i { width: 28px; height: 28px; margin-bottom: 5px; }
+        .tab-label { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; }
+
+        .admin-container {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 900; background-size: cover; background-position: center;
+        }
+        .admin-container.show { display: block; }
+        .admin-content {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(20, 20, 20, 0.95); padding: 40px; border-radius: 20px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 600px; width: 90%;
+        }
+        .back-btn {
+            position: absolute; top: 20px; right: 20px; padding: 10px 20px;
+            background: rgba(30, 30, 30, 0.8); color: #e0e0e0; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; cursor: pointer; z-index: 901;
+        }
+        .todo-list { text-align: left; margin-top: 20px; }
+        .todo-item {
+            background: rgba(30, 30, 30, 0.6); padding: 15px 20px; margin-bottom: 10px;
+            border-radius: 8px; display: flex; align-items: center; gap: 12px;
+        }
+        .todo-text.completed { text-decoration: line-through; opacity: 0.5; }
+
+        .password-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
+            z-index: 2000; justify-content: center; align-items: center;
+        }
+        .password-modal.show { display: flex; }
+        .password-box {
+            background: rgba(30, 30, 30, 0.9); padding: 40px; border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; max-width: 400px; width: 90%;
+        }
+        .password-input {
+            width: 100%; padding: 12px 15px; background: rgba(20, 20, 20, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 8px;
+            color: #e0e0e0; margin-bottom: 15px; outline: none;
+        }
+        .password-submit {
+            padding: 12px 30px; background: #2a2a2a; color: #e0e0e0;
+            border: 1px solid #444; border-radius: 8px; cursor: pointer;
+        }
+        .password-error { color: #ff4444; margin-top: 10px; display: none; }
+
+        .credits { position: fixed; bottom: 25px; left: 20px; color: #666; font-size: 14px; z-index: 1001; }
+        .popup {
+            display: none; position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            background: #2a2a2a; color: #e0e0e0; padding: 15px 30px; border-radius: 10px;
+            z-index: 1000; border: 1px solid #444;
+        }
+      </xhtml:style>
+    </xhtml:head>
+    <xhtml:body>
+      <div class="bg-stripes"></div>
+      <canvas id="snowCanvas"></canvas>
+
+      <div class="container" id="mainContainer">
+          <h1>slack lite</h1>
+          <h3 id="subtitle">go to the doc in the games page to get the latest version</h3>
+          
+          <div class="button-grid" id="proxiesGrid">
+              <button class="regular-button" onclick="openBlob('https://s3.amazonaws.com/zoxh/index.html')">tung tung</button>
+              <button class="regular-button" onclick="openBlob('https://storage.googleapis.com/gclassroom/index.html')">opium</button>
+              <button class="regular-button" onclick="openBlob('https://s3.dualstack.us-east-1.amazonaws.com/jlkl/index.html?r=g')">bull-33</button>
+              <button class="regular-button" onclick="openBlob('https://s3.amazonaws.com/oiop/index.html')">bull-33 2</button>
+              <button class="regular-button" onclick="openBlob('https://s3.amazonaws.com/2027games/index.html')">fern</button>
+              <button class="regular-button" onclick="openBlob('https://neo-os-desktop-20260908.web.app/')">neo os</button>
+              <button class="regular-button" onclick="openBlob('thermowavetherapy.com/')">quasar</button>
+              <button class="regular-button" onclick="openBlob('https://cdn.jsdelivr.net/gh/rykcbaoolNEW/dogeub/index.svg?id=gegZneXJ53RPUT8oGC84bYV69bZF4j4G')">dogeub</button>
+              <button class="regular-button" onclick="openBlob('https://buypremiumpls.b-cdn.net/')">monoxide</button>
+              <button class="regular-button" onclick="openBlob('https://icon.horse/icon/germancamel.nekoweb.org')">gn-math</button>
+              <button class="regular-button" onclick="openBlob('https://storage.googleapis.com/cleverteachings/index.html')">gn-math 2</button>
+              <button class="regular-button" onclick="openBlob('https://nextcache3580.b-cdn.net/')">serum os</button>
+          </div>
+
+          <div class="button-grid" id="gamesGrid" style="display: none;">
+              <button class="regular-button" onclick="openBlob('https://docs.google.com/document/d/1vzJqO9GvSnzM35RQYk_9_6We3rF64EkTbE3TcHhkKW4/edit?usp=sharing')">click here for games</button>
+          </div>
+
+          <div class="button-grid" id="appsGrid" style="display: none;">
+              <button class="regular-button" onclick="openCodeEditor()">code editor</button>
+              <button class="regular-button" onclick="openBlob('https://monochrome.tf/')">music (not working)</button>
+          </div>
+          
+          <div id="popup" class="popup">Opening link...</div>
+      </div>
+
+      <div class="admin-container" id="adminContainer">
+          <button class="back-btn" onclick="closeAdmin()">Back</button>
+          <div class="admin-content">
+              <h2>lucas' todo list</h2>
+              <div class="todo-list">
+                  <div class="todo-item"><input type="checkbox" class="todo-checkbox"/><span class="todo-text">finish up the testnav exploit</span></div>
+                  <div class="todo-item"><input type="checkbox" class="todo-checkbox"/><span class="todo-text">get the source for a static proxy</span></div>
+                  <div class="todo-item"><input type="checkbox" class="todo-checkbox"/><span class="todo-text">maybe make jinx look a lil better</span></div>
+                  <div class="todo-item"><input type="checkbox" class="todo-checkbox"/><span class="todo-text">make homemade cs2 case opening</span></div>
+                  <div class="todo-item"><input type="checkbox" class="todo-checkbox"/><span class="todo-text">moreeee proxiessss</span></div>
+              </div>
+          </div>
+      </div>
+
+      <div class="password-modal" id="passwordModal">
+          <div class="password-box">
+              <h2>Enter Password</h2>
+              <input type="password" class="password-input" id="passwordInput" placeholder="may or may not be 4422"/>
+              <button class="password-submit" onclick="checkPassword()">Submit</button>
+              <div class="password-error" id="passwordError">Incorrect password</div>
+          </div>
+      </div>
+
+      <div class="credits">made by lucas (v1.0.3)</div>
+
+      <div class="tab-bar">
+          <div class="tab-item active" onclick="switchTab('proxies')" data-tab="proxies"><i data-lucide="globe"></i><span class="tab-label">Proxies</span></div>
+          <div class="tab-item" onclick="switchTab('games')" data-tab="games"><i data-lucide="gamepad-2"></i><span class="tab-label">Games</span></div>
+          <div class="tab-item" onclick="switchTab('apps')" data-tab="apps"><i data-lucide="app-window"></i><span class="tab-label">Apps</span></div>
+          <div class="tab-item" onclick="switchTab('admin')" data-tab="admin"><i data-lucide="shield"></i><span class="tab-label">Admin</span></div>
+      </div>
+
+      <xhtml:script>
+      //<![CDATA[
+        try { lucide.createIcons(); } catch(e){}
+
+        const fullTitle = "slack lite";
+        let titleIndex = 0, isGrowing = true;
+        function animatePageTitle() {
+            if (isGrowing) { titleIndex++; if (titleIndex >= fullTitle.length) { titleIndex = fullTitle.length - 1; isGrowing = false; } } 
+            else { titleIndex--; if (titleIndex <= 0) { titleIndex = 0; isGrowing = true; } }
+            document.title = fullTitle.substring(0, titleIndex + 1);
+            setTimeout(animatePageTitle, 300);
+        }
+        animatePageTitle();
+
+        // Using single quotes and escaping internal single quotes to avoid XML parsing issues with & and "
+        const cobaltHTML = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>cobalt</title><scr'+'ipt src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/scr'+'ipt><style>:root{--bg:#050505;--txt:#d4d4d4}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--txt);font-family:monospace;height:100vh;display:flex;flex-direction:column}header{padding:10px;background:#0a0a0a;border-bottom:1px solid #333;display:flex;justify-content:space-between}.workspace{flex:1;display:flex}.sidebar{width:200px;background:#080808;border-right:1px solid #333;overflow-y:auto}.editor{flex:1;display:flex;flex-direction:column}textarea{flex:1;background:#050505;color:#fff;border:none;padding:20px;font-family:monospace;resize:none;outline:none}iframe{width:100%;height:50%;border:none;border-top:1px solid #333;background:#fff}</style></head><body><header><span>cobalt</span><button onclick="alert(\'Exported!\')">Save</button></header><div class="workspace"><div class="sidebar" id="tree"></div><div class="editor"><textarea id="code" oninput="updatePreview()"></textarea><iframe id="preview"></iframe></div></div><scr'+'ipt>const files={"index.html":"<h1>Hello</h1>"};let active="index.html";function renderTree(){document.getElementById("tree").innerHTML=Object.keys(files).map(f=>"<div style=\\"padding:5px;cursor:pointer;color:"+(f==active?"#0af":"#888")+"\\" onclick=\\"loadFile(\\\'"+f+"\\\')\\">"+f+"</div>").join("");}function loadFile(f){active=f;document.getElementById("code").value=files[f];renderTree();updatePreview();}function updatePreview(){files[active]=document.getElementById("code").value;const d=document.getElementById("preview").contentDocument;d.open();d.write(files[active]);d.close();}loadFile("index.html");<\/scr'+'ipt></body></html>';
+
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth, height = window.innerHeight;
+        canvas.width = width; canvas.height = height;
+        const snowflakes = [];
+        for(let i=0; i<200; i++) snowflakes.push({x:Math.random()*width, y:Math.random()*-height, s:Math.random()*5+2, v:Math.random()*3+2});
+        
+        function animateSnow() {
+            ctx.clearRect(0,0,width,height);
+            ctx.fillStyle = "rgba(255,255,255,0.4)";
+            snowflakes.forEach(f => {
+                f.y += f.v;
+                if(f.y > height) { f.y = -10; f.x = Math.random()*width; }
+                ctx.beginPath(); ctx.arc(f.x, f.y, f.s, 0, Math.PI*2); ctx.fill();
+            });
+            requestAnimationFrame(animateSnow);
+        }
+        animateSnow();
+        window.addEventListener('resize', () => { width=window.innerWidth; height=window.innerHeight; canvas.width=width; canvas.height=height; });
+
+        let adminUnlocked = false;
+
+        function switchTab(tab) {
+            closeAdmin();
+            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+            const activeTab = document.querySelector('[data-tab="' + tab + '"]');
+            if(activeTab) activeTab.classList.add('active');
+            
+            ['proxiesGrid','gamesGrid','appsGrid'].forEach(id => document.getElementById(id).style.display = 'none');
+            document.getElementById('mainContainer').style.display = 'flex';
+
+            if(tab === 'proxies') { document.getElementById('proxiesGrid').style.display = 'grid'; document.getElementById('subtitle').textContent = 'choose your proxy'; }
+            else if(tab === 'games') { document.getElementById('gamesGrid').style.display = 'grid'; document.getElementById('subtitle').textContent = ''; }
+            else if(tab === 'apps') { document.getElementById('appsGrid').style.display = 'grid'; document.getElementById('subtitle').textContent = 'choose your app'; }
+            else if(tab === 'admin') {
+                if(!adminUnlocked) showPasswordModal();
+                else showAdmin();
+            }
+        }
+
+        function showAdmin() {
+            document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('adminContainer').classList.add('show');
+        }
+        function closeAdmin() { document.getElementById('adminContainer').classList.remove('show'); }
+
+        function showPasswordModal() {
+            document.getElementById('passwordModal').classList.add('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+        }
+        function checkPassword() {
+            if(document.getElementById('passwordInput').value === '4422') {
+                adminUnlocked = true;
+                document.getElementById('passwordModal').classList.remove('show');
+                showAdmin();
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+            }
+        }
+
+        document.querySelectorAll('.todo-checkbox').forEach(c => {
+            c.addEventListener('change', function() {
+                this.nextElementSibling.classList.toggle('completed');
+            });
+        });
+
+        function openCodeEditor() {
+            const blob = new Blob([cobaltHTML], {type: "text/html"});
+            window.open(URL.createObjectURL(blob), "_blank");
+        }
+
+        function openBlob(url) {
+            // Using string concatenation to avoid any template literal issues in XML
+            var html = '<!DOCTYPE html><html><body style="margin:0;overflow:hidden;height:100vh;"><iframe src="' + url + '" style="width:100%;height:100%;border:none;" referrerpolicy="no-referrer" allow="fullscreen"></iframe></body></html>';
+            var blob = new Blob([html], {type: "text/html"});
+            window.open(URL.createObjectURL(blob), "_blank");
+        }
+
+        function showPopup(msg) {
+            var p = document.getElementById("popup");
+            p.textContent = msg; p.style.display = "block";
+            setTimeout(function() { p.style.display = "none"; }, 3000);
+        }
+      //]]>
+      </xhtml:script>
+    </xhtml:body>
+    </xhtml:html>
+  </foreignObject>
+</svg>
