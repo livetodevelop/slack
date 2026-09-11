@@ -44,19 +44,20 @@
       <div class="card">
         <h1>SVG HTML Proof of Concept</h1>
         <p>This HTML is running inside an SVG foreignObject.</p>
-        <button onclick="changeColor()">Change Background Color</button>
+        <button onclick="window.changeColor()">Change Background Color</button>
       </div>
 
       <xhtml:script>
       //<![CDATA[
-        function changeColor() {
-          const colors = ['#1a1a1a', '#2d1b2e', '#1b2d2b', '#2d2b1b', '#1b1b2d'];
+        // We attach to window to ensure the HTML onclick can find it
+        window.changeColor = function() {
+          console.log("Button clicked! Changing color...");
+          const colors = ['#1a1a1a', '#2d1b2e', '#1b2d2b', '#2d2b1b', '#1b1b2d', '#2b1b1b'];
           const randomColor = colors[Math.floor(Math.random() * colors.length)];
           document.body.style.backgroundColor = randomColor;
-          console.log("Color changed to: " + randomColor);
-        }
+        };
         
-        // Auto-resize logic for the SVG container
+        // Auto-resize logic
         window.addEventListener('resize', function() {
             var w = window.innerWidth;
             var h = window.innerHeight;
